@@ -1,0 +1,343 @@
+{
+    "Ac1": [
+        "Data Capture",
+        [
+            "obtain",
+            "capture"
+        ],
+        [
+            "data",
+            "information"
+        ]
+    ],
+    "Ac2": [
+        "Data Transfer",
+        [
+            "transfer",
+            "send",
+            "collect",
+            "move",
+            "download",
+            "upload",
+            "receive"
+        ],
+        [
+            "data",
+            "information"
+        ]
+    ],
+    "Ac3": [
+        "Data Processing Activities",
+        [
+            "collect",
+            "store",
+            "share",
+            "receive",
+            "upload",
+            "download",
+            "use",
+            "analyse",
+            "process",
+            "reverse engineer"
+        ],
+        [
+            "purpose"
+        ]
+    ],
+    "Ac4": [
+        "Retention and Deletion",
+        [
+            "retain",
+            "keep",
+            "destroy",
+            "remove"
+        ],
+        [
+            "database",
+            "years",
+            "months",
+            "period",
+            "end of",
+            "permanently"
+        ]
+    ],
+    "Ac5": [
+        "New Activity",
+        [
+            "secondary use",
+            "re-use",
+            "reuse",
+            "new purposes",
+            "other purposes"
+        ],
+        [
+            "consent",
+            "notice",
+            "refuse",
+            "legal basis"
+        ]
+    ],
+    "Ag1": [
+        "Agents",
+        [
+            "company",
+            "party",
+            "disclosing party",
+            "sending party",
+            "data controller",
+            "data processor",
+            "data subject",
+            "user",
+            "individual",
+            "entity"
+        ],
+        [
+            "contact"
+        ]
+    ],
+    "E1": [
+        "Data",
+        [
+            "personal information",
+            "personal data",
+            "sensitive data",
+            "data",
+            "information",
+            "identifier"
+        ],
+        []
+    ],
+    "E2": [
+        "Infrastructure",
+        [
+            "store",
+            "safekeeping",
+            "safeguard",
+            "archive",
+            "storage",
+            "repository",
+            "computer",
+            "database",
+            "IT",
+            "system",
+            "computer",
+            "environment",
+            "technology",
+            "infrastructure",
+            "platform"
+        ],
+        [
+            "anti-virus",
+            "antivirus",
+            "protection",
+            "secure",
+            "safe",
+            "confidential"
+        ]
+    ],
+    "M1": [
+        "Regulation",
+        [
+            "legislation",
+            "liable",
+            "law",
+            "regulation",
+            "compliance"
+        ],
+        [
+            "Data Protection Act",
+            "D.P.A.",
+            "G.D.P.R.",
+            "DPA",
+            "GDPR"
+        ]
+    ],
+    "M2": [
+        "Period",
+        [
+            "effective date",
+            "expiry"
+        ],
+        [
+            "years",
+            "months",
+            "period"
+        ]
+    ],
+    "M3": [
+        "Period",
+        [
+            "terminate",
+            "termination"
+        ],
+        []
+    ],
+    "M4": [
+        "Execution",
+        [
+            "sign",
+            "read",
+            "understood",
+            "agree"
+        ],
+        []
+    ],
+    "M5": [
+        "Version History",
+        [
+            "version",
+            "changes",
+            "revise",
+            "review",
+            "waive",
+            "modify",
+            "amend"
+        ],
+        [
+            "document",
+            "agreement",
+            "DGI",
+            "D.G.I."
+        ]
+    ],
+    "RO1": [
+        "Obligations of Disclosing Party",
+        [
+            "roles",
+            "responsibilities",
+            "obligation",
+            "agree",
+            "bound"
+        ],
+        [
+            "disclosing party",
+            "data controller",
+            "receiving party",
+            "data processor",
+            "company"
+        ]
+    ],
+    "RO2": [
+        "Obligations of Receiving Party",
+        [
+            "roles",
+            "responsibilities",
+            "obligation",
+            "agree",
+            "bound"
+        ],
+        [
+            "disclosing party",
+            "data controller",
+            "receiving party",
+            "data processor",
+            "company"
+        ]
+    ],
+    "RO3": [
+        "Rights of Disclosing Party",
+        [
+            "rights"
+        ],
+        [
+            "disclosing party",
+            "data controller",
+            "receiving party",
+            "data processor",
+            "company"
+        ]
+    ],
+    "RO4": [
+        "Rights of Receiving Party",
+        [
+            "rights"
+        ],
+        [
+            "disclosing party",
+            "data controller",
+            "receiving party",
+            "data processor",
+            "company"
+        ]
+    ],
+    "RO5": [
+        "Rights of Data Subjects",
+        [
+            "rights"
+        ],
+        [
+            "access",
+            "correct",
+            "restrict",
+            "suspend",
+            "stop"
+        ]
+    ],
+    "S1": [
+        "Sharing with Third Parties",
+        [
+            "disclose",
+            "disclosure",
+            "share",
+            "use"
+        ],
+        [
+            "third party"
+        ]
+    ],
+    "S2": [
+        "Public Release",
+        [
+            "publish",
+            "broadcast",
+            "public release",
+            "public",
+            "open"
+        ],
+        []
+    ],
+    "S3": [
+        "Disclosure to Court",
+        [
+            "legal",
+            "court",
+            "jurisdiction",
+            "administrative agency"
+        ],
+        []
+    ],
+    "S4": [
+        "Inadvertent Disclosure",
+        [
+            "inadvertently",
+            "accidentally",
+            "incident"
+        ],
+        [
+            "disclose",
+            "breach",
+            "identify",
+            "link",
+            "unauthorised access",
+            "unauthorised use",
+            "unauthorised process"
+        ]
+    ],
+    "S5": [
+        "Intentional Disclosure",
+        [
+            "inadvertently",
+            "accidentally",
+            "incident"
+        ],
+        [
+            "disclose",
+            "breach",
+            "identify",
+            "link",
+            "unauthorised access",
+            "unauthorised use",
+            "unauthorised process"
+        ]
+    ]
+}
