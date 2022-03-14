@@ -19,10 +19,16 @@
 ##ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 ##OTHER DEALINGS IN THE SOFTWARE.
 
+
 import nltk
+
 
 def paragraph_tokenize(text, **kwargs):
     # Attempt to split string into list of
     # strings for paragraphs.
-    raise NotImplementedError
+    return [s.strip() for s in text.split('\n\n')]
 
+def word_tokenize(string_list, **kwargs):
+    # Return a generator of lists of words
+    # from a list of strings
+    return (nltk.word_tokenize(x, **kwargs) for x in string_list)

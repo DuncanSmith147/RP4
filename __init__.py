@@ -22,8 +22,6 @@
 import configparser
 from pathlib import Path
 
-from . import parsers
-
 config_path = Path(__file__).parent / 'app.conf'
 conf = configparser.ConfigParser()
 conf.read(config_path)

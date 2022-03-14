@@ -159,6 +159,12 @@ class Pipeline(list):
             arg = item(arg)
         return arg
 
+    def __getitem__(self, i):
+        if isinstance(i, slice):
+            return self.__class__(list.__getitem__(self, i))
+        else:
+            return list.__getitem__(self, i)
+
 
 """Function for replacing words according to supplied mapping"""
 
@@ -166,5 +172,24 @@ def find_replace(words, mapping):
     # "words" is a list of strings.
     # "mapping" is dict mapping words to
     # the words that will replace them
-    # in the returned list.
+    # in the returned generator.
     return [mapping.get(word, word) for word in words]
+
+
+"""Convenience / factory functions for constructing pipelines"""
+
+def replacement_factory(mapping):
+    # returns a function that takes an iterable of word lists
+    # and generates word lists with words replaced according to mapping
+    def f(word_lists):
+        return (find_replace(word_list, mapping) for word_list in word_lists)
+    return f
+
+def filter_factory(func):
+    # returns a function that takes an iterable of word lists
+    # and generates word lists with words filtered according
+    # to func (i.e. all words w s.t. func(w) returns True)
+    def f(word_lists):
+        return (filter(func, word_list) for word_list in word_lists)
+    return f
+        

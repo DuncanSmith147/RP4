@@ -20,11 +20,18 @@
 ##OTHER DEALINGS IN THE SOFTWARE.
 
 
+from collections import defaultdict
+
 import nltk
 
 from . import extract
 from . import utils
+from . import tokenize
 
+from imp import reload
+reload(extract)
+reload(utils)
+reload(tokenize)
 
 def eval_indices(indices):
     # "indices" is a list of lists of integers (indices).
@@ -47,39 +54,38 @@ def eval_indices(indices):
         minval = cand
     return True
 
-def naive(filename):
-    # get text as string
-    text = extract.process(filename).decode()
-    # sentence tokenize
-    sents = nltk.sent_tokenize(text)
-    # word tokenize
-    sents = [nltk.word_tokenize(sent) for sent in sents]
-    # let's try word replacement to our standard synonyms / hyponyms
-    syndict = utils.read_json_data('synonyms.dat')
-    hypdict = utils.read_json_data('hyponyms.dat')
-    sents = [utils.find_replace(sent, hypdict) for sent in sents]
-    sents = [utils.find_replace(sent, syndict) for sent in sents]
-    # apply rules
-    rules_data = utils.read_json_data('rules.dat')
-    # for efficiency convert remove longer descriptions and
+def check_rule(words, rule):
+    # words is a list of words from a section / paragraph / sentence
+    # each word must be separated from punctuation characters e.g. ['dog', '.']
+    # rule is a list of sets of keywords
+    # be careful with case (e.g. lower case all words)
+    indices = [[] for _ in rule]
+    for i, word_set in enumerate(rule):
+        intersect = word_set.intersection(words)
+        if intersect:
+            indices[i].extend([words.index(word) for word in intersect])
+        else:
+            return False
+    return eval_indices(indices)
+
+def naive(filename, pipeline, rules_file):
+    # get text as single string and lower case
+    text = extract.process(filename).decode().lower()
+    # apply pipeline
+    word_lists = list(pipeline(text))
+    # get rules
+    rules_data = utils.read_json_data(rules_file)
+    # for efficiency remove longer descriptions and
     # convert lists to sets
     rules = {}
-    res = []
     for key, lis in rules_data.items():
         rules[key] = [set(item) for item in lis[1:]]
-    #return rules
-    for sent in sents:
-        for key, lis in rules.items():
-            indices = [[] for _ in lis]
-            for i, word_set in enumerate(lis):
-                intersect = word_set.intersection(sent)
-                if intersect:
-                    indices[i].extend([sent.index(word) for word in intersect])
-                else:
-                    break
-            else:
-                if eval_indices(indices):
-                    res.append(key)
+    # apply each rule to each list of words
+    res = defaultdict(list)
+    for key, rule in rules.items():
+        for word_list in word_lists:
+            if check_rule(word_list, rule):
+                res[key].append(word_list)
     return res
 
-    
+
