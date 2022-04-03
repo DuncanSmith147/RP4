@@ -21,7 +21,7 @@
 
 
 import os
-from collections import defaultdict
+from collections import defaultdict, Counter
 import json
 
 import nltk
@@ -31,6 +31,10 @@ from . import extract
 from . import utils
 from . import tokenize
 
+##from imp import reload
+##reload(extract)
+##reload(utils)
+##reload(tokenize)
 
 def _eval_indices(indices):
     # "indices" is a list of lists of integers (indices).
@@ -220,7 +224,10 @@ class BoolAnalyzer(Analyzer):
         for i, text in enumerate(texts):
             for key, rule in self.rules.items():
                 if check_rule(text, rule):
-                    res[key].append(i)
+                    # always appends 1, but
+                    # store anyway as derived
+                    # classes might have different scores
+                    res[key].append((i, 1))
         self.texts, self.results = texts, res
 
     def table_output(self):
@@ -230,15 +237,19 @@ class BoolAnalyzer(Analyzer):
         # Returns a sparse matrix (dict mapping coordinates
         # to non-zero values) with text indicess as row indices
         # and sorted feature keys as columns
+        if self.results is None:
+            raise ValueError("No results to output")
         texts, res = self.texts, self.results
         keys = sorted(self.rules.keys())
         arr = {}
         for j, key in enumerate(keys):
-            for i in res[key]:
-                arr[(i,j)] = 1
+            for i, score in res[key]:
+                arr[(i,j)] = score
         return arr
 
-    def data_frame(self):
+    def data_frame(self, strings=None, suppress=False):
+        if self.results is None:
+            raise ValueError("No results to output")
         texts, res = self.texts, self.results
         keys = sorted(self.rules.keys())
         # create dictionary of sparse arrays with
@@ -246,10 +257,23 @@ class BoolAnalyzer(Analyzer):
         d = {}
         for key in keys:
             lis = [0]*len(texts)
-            for i in res[key]:
-                lis[i] = 1
+            for i, j in res[key]:
+                lis[i] = j
             d[key] = pd.arrays.SparseArray(lis, dtype='int32')
-        return pd.DataFrame(d, columns=keys)
+        frame = pd.DataFrame(d, columns=keys)
+        if strings:
+            if not len(strings) == len(texts):
+                raise ValueError(("'strings' has length {} while "
+                                  "analysis is based on {} 'texts'").format(len(strings), len(texts)))
+            frame.insert(loc=0, column='Text', value=strings)
+        if suppress:
+            if strings:
+                frame = frame.iloc[[i for i in range(frame.shape[0]) if frame.values[i,1:].sum()],
+                                   [j for j in range(frame.shape[1]) if j==0 or frame.values[:,j].sum()]]
+            else:
+                frame = frame.iloc[[i for i in range(frame.shape[0]) if frame.values[i,:].sum()],
+                                   [j for j in range(frame.shape[1]) if frame.values[:,j].sum()]]
+        return frame
 
 
 class FreqAnalyzer(BoolAnalyzer):
@@ -267,36 +291,64 @@ class FreqAnalyzer(BoolAnalyzer):
                     res[key].append((i, freq))
         self.texts, self.results = texts, res
 
-    def table_output(self):
-        # returns array with rows corresponding
-        # to indices of texts and columns corresponding
-        # to rule keys (in sorted order)
-        # Returns a sparse matrix (dict mapping coordinates
-        # to non-zero values) with text indicess as row indices
-        # and sorted feature keys as columns
-        texts, res = self.texts, self.results
-        keys = sorted(self.rules.keys())
-        arr = {}
-        for j, key in enumerate(keys):
-            for (i, freq) in res[key]:
-                arr[(i,j)] = freq
-        return arr
 
-    def data_frame(self):
-        texts, res = self.texts, self.results
-        keys = sorted(self.rules.keys())
-        # create dictionary of sparse arrays with
-        # insertion order equal to order of keys (i.e. sorted)
-        d = {}
-        for key in keys:
-            lis = [0]*len(texts)
-            for i,j in res[key]:
-                lis[i] = j
-            d[key] = pd.arrays.SparseArray(lis, dtype='int32')
-        return pd.DataFrame(d, columns=keys)
+class HybridAnalyzer(FreqAnalyzer):
+    # inherit from FreqAnalyzer because only the analysis differs
+    def __init__(self, rules):
+        FreqAnalyzer.__init__(self, rules)
+
+    def analyze(self, texts):
+        # list of lists of words
+        res = defaultdict(list)
+        for i, text in enumerate(texts):
+            for key, rule in self.rules.items():
+                score = 2*check_freq(text, rule)
+                if not score:
+                    cntr = Counter(text)
+                    for keyword in rule[0]:
+                        score += cntr[keyword]
+                if score:
+                    res[key].append((i, score))
+        self.texts, self.results = texts, res
 
 
+def to_latex(frames, filename, landscape=False, **kwargs):
+    # Export the data frames to a LateX file.
+    # Places one table on each page.
+    # Optionally choose landscape.
+    # Automatically scales tables to fit
+    # to page (if too large).
+    # Using some keyword arguments for 'frame.to_latex'
+    # will produce a LaTeX file that will not
+    # compile without errors.
+    # In this case the file generated must be edited.
+    with open(filename, 'w') as f:
+        f.write(r'\documentclass[a4paper]{article}')
+        f.write('\n\n')
+        f.write('\n'.join([r'\usepackage{booktabs}',
+                           r'\usepackage{adjustbox}']))
+        f.write('\n')
+        if landscape:
+            f.write(r'\usepackage[landscape, margin=0.5in]{geometry}')
+        else:
+            f.write(r'\usepackage[margin=0.5in]{geometry}')
+        f.write('\n\n')
+        f.write(r'\begin{document}')
+        f.write('\n\n')
+        f.write(r'\centering')
+        for i, frame in enumerate(frames):
+            if not i == 0:
+                f.write('\n\n')
+                f.write(r'\newpage')
+            f.write('\n\n')
+            f.write(r'\begin{adjustbox}{max width=\linewidth, max totalheight=\textheight}')
+            f.write('\n\n')
+            f.write(frame.to_latex(**kwargs))
+            f.write('\n')
+            f.write(r'\end{adjustbox}')
+        f.write('\n\n')
+        f.write(r'\end{document}')
 
-
+    
 
 

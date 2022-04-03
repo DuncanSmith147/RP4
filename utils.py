@@ -193,3 +193,40 @@ def filter_factory(func):
         return (filter(func, word_list) for word_list in word_lists)
     return f
         
+
+
+##import io
+##
+##from pdfminer.converter import TextConverter
+##from pdfminer.layout import LAParams
+##from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
+##from pdfminer.pdfpage import PDFPage
+##
+##def pdfparser(data):
+##    rsrcmgr = PDFResourceManager()
+##    retstr = io.StringIO()
+##    codec = 'utf-8'
+##    laparams = LAParams()
+##    device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+##
+##    interpreter = PDFPageInterpreter(rsrcmgr, device)
+##    password = ""
+##    maxpages = 0
+##    caching = True
+##    pagenos = set()
+##
+##    with open(data, 'rb') as fp:
+##        for page in PDFPage.get_pages(fp,
+##                                      pagenos, 
+##                                      maxpages=maxpages,
+##                                      password=password,
+##                                      caching=caching,
+##                                      check_extractable=False):
+##            interpreter.process_page(page)
+##
+##    # As pointed out in another answer, this goes outside the loop
+##    text = retstr.getvalue()
+##
+##    device.close()
+##    retstr.close()
+##    return text
